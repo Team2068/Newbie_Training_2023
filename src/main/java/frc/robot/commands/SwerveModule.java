@@ -10,16 +10,16 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
-/** Add your docs here. */
+/*                                                                                                                           */
 public class SwerveModule {
-    CANSparkMax drivemotor;
-    CANSparkMax swervemotor;
+   public CANSparkMax drivemotor;
+   public CANSparkMax swervemotor;
     public CANCoder steerencoder;
 
     final double steerReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
-    public SwerveModule(int dmotorid, int smoterid, double encoderoffset){
-        drivemotor = new CANSparkMax(dmotorid, MotorType.kBrushless);
-        swervemotor = new CANSparkMax(smoterid, MotorType.kBrushless); 
+    public SwerveModule(int drivemotorid, int swervemoterid, double encoderoffset){
+        drivemotor = new CANSparkMax(drivemotorid, MotorType.kBrushless);
+        swervemotor = new CANSparkMax(swervemoterid, MotorType.kBrushless); 
         swervemotor.getEncoder().setPositionConversionFactor(2*Math.PI*steerReduction);    
         swervemotor.getPIDController().setP(1.0);
         swervemotor.getPIDController().setD(0.1);
