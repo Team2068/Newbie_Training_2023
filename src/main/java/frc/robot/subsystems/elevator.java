@@ -10,20 +10,21 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class telescope extends SubsystemBase {
-  public CANSparkMax telescopeMotor;
+public class elevator extends SubsystemBase {
+  public CANSparkMax elevatorMotor = new CANSparkMax(0, MotorType.kBrushless);
+  public CANSparkMax followerMotor = new CANSparkMax(1, MotorType.kBrushless);
 
   /** Creates a new telescope. */
-  public telescope() {
-    telescopeMotor = new CANSparkMax(0, MotorType.kBrushless);
-    telescopeMotor.getPIDController().setP(0.3);
-    telescopeMotor.getPIDController().setI(0);
-    telescopeMotor.getPIDController().setD(0);
-    telescopeMotor.getEncoder().setPosition(0);
+  public elevator() {
+    elevatorMotor.getPIDController().setP(0.3);
+    elevatorMotor.getPIDController().setI(0);
+    elevatorMotor.getPIDController().setD(0);
+    elevatorMotor.getEncoder().setPosition(0);
+    followerMotor.follow(elevatorMotor, true);
   }
 
   public void SetPosition(double position){
-    telescopeMotor.getPIDController().setReference(position, ControlType.kPosition);
+    elevatorMotor.getPIDController().setReference(position, ControlType.kPosition);
   }
 
   @Override
