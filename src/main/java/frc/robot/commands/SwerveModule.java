@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -15,6 +16,8 @@ public class SwerveModule {
    public CANSparkMax drivemotor;
    public CANSparkMax swervemotor;
     public CANCoder steerencoder;
+
+    public double desiredAngle;
 
     final double steerReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public SwerveModule(int drivemotorid, int swervemoterid, double encoderoffset){
@@ -29,6 +32,10 @@ public class SwerveModule {
         steerencoder = new CANCoder(15);
         steerencoder.configMagnetOffset(encoderoffset);
         steerencoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+    }
+
+    public Double getPos(){
+        return steerencoder.getAbsolutePosition();
     }
 
     public void resetSteerPosition() {
@@ -47,5 +54,24 @@ public class SwerveModule {
 
     public void rotateto(double rotation){
         swervemotor.getPIDController().setReference(Math.toRadians(rotation), ControlType.kPosition);
+    }
+
+    public void set(double driveVolts, double targetAngle){
+        resetSteerPosition();
+
+        targetAngle %= 360;
+        targetAngle += (targetAngle < 0.0) ? 360 : 0;
+
+        targetAngle = desiredAngle;
+
+        double diff = targetAngle - steerencoder.getAbsolutePosition();
+
+        if(diff > 90 || diff < -90){
+            targetAngle = (targetAngle + 180) % 360;
+            driveVolts *= -1.0;
+        }
+
+        drivemotor.setVoltage(driveVolts);
+        swervemotor.getPIDController().setReference(Math.toRadians(targetAngle), ControlType.kPosition);
     }
 }

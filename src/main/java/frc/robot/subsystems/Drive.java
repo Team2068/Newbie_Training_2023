@@ -5,15 +5,21 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.SwerveModule;
 
 public class Drive extends SubsystemBase {
   /** Creates a new Drive. */
-  SwerveModule module1 = new SwerveModule(1, 2, 34);
-  SwerveModule module2 = new SwerveModule(3, 4, -8);
-  SwerveModule module3 = new SwerveModule(5, 6, 65);
-  SwerveModule module4 = new SwerveModule(7, 8, 94);
+  SwerveModule module1 = new SwerveModule(1, 2, 34); // TODO put in actual numbers
+  SwerveModule module2 = new SwerveModule(3, 4, -8);// TODO put in actual numbers
+  SwerveModule module3 = new SwerveModule(5, 6, 65); // TODO put in actual numbers
+  SwerveModule module4 = new SwerveModule(7, 8, 94); // TODO put in actual numbers
+
+  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(4, 4)); // TODO put in actual numbers
   public Drive() {
 
   }
@@ -21,6 +27,18 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+  }
+
+  public void getAxisInputWithKinnematics(double LeftYAxis, double LeftXAxis, double RightXAxis) {
+    SwerveModuleState[] arr = kinematics.toSwerveModuleStates(new ChassisSpeeds(LeftXAxis, LeftYAxis, RightXAxis));
+    
+    kinematics.desaturateWheelSpeeds(arr, .2);
+    
+    module1.move(arr[0].speedMetersPerSecond, arr[0].angle.getDegrees());
+    module1.move(arr[1].speedMetersPerSecond, arr[1].angle.getDegrees());
+    module1.move(arr[2].speedMetersPerSecond, arr[2].angle.getDegrees());
+    module1.move(arr[3].speedMetersPerSecond, arr[3].angle.getDegrees());
 
   }
 
