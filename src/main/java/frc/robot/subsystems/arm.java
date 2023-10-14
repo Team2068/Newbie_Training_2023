@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -25,6 +28,13 @@ public class arm extends SubsystemBase {
     armEnconder.reset();
 
     armEnconder.setPositionOffset(0);
+
+    armMotor2.follow(armMotor1, true);
+    armMotor1.getPIDController().setP(0);
+    armMotor1.getPIDController().setI(0);
+    armMotor1.getPIDController().setD(0);
+    armMotor1.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, 8192);
+    armMotor1.getEncoder().setPositionConversionFactor(360); 
   }
 
   public void resetEncoder(){
@@ -33,12 +43,17 @@ public class arm extends SubsystemBase {
 
 
   public Double getpos(){
-    return (armEnconder.getAbsolutePosition() * 360) % 360;
+    return (armMotor1.getEncoder().getPosition()) % 360;
   }
 
   public void moveTo(int position){
     
   }
+  public double encoderpos() {
+    return armEnconder.getAbsolutePosition();
+  }
+
+  
 
   public void setVoltage(double voltage) {
     armMotor1.setVoltage(voltage);
@@ -48,5 +63,9 @@ public class arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void setPosition(double position) {
+    armMotor1.getPIDController().setReference(position,ControlType.kPosition);
   }
 }
